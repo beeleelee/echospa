@@ -19,6 +19,19 @@ go run .                     # run dev (no hot-reload)
 
 Before running, generate or copy an SPA build directory to `./web/`. This is not part of the Go project — it is produced by an external frontend build step (e.g., `npm run build` from a sibling frontend repo).
 
+## Docker
+
+```sh
+docker build -t echospa .
+```
+
+Multi-stage build (golang:1.26-alpine → alpine:3.21), outputs a ~9 MB image. Child SPA projects `FROM` this image and copy their build output to `/web/`:
+
+```dockerfile
+FROM ghcr.io/beeleelee/echospa:latest
+COPY build/ /web/
+```
+
 ## Tests
 
 No tests exist yet.

@@ -1,0 +1,7 @@
+.git
+AGENTS.md
+.github
+*.md
+Makefile
+Dockerfile
+.dockerignore
