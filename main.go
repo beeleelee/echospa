@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,14 +13,36 @@ import (
 )
 
 func main() {
+	port := flag.String("port", "", "listen port (default 8080)")
+	staticRoot := flag.String("static-root", "", "path to static files root (default ./web)")
+	flag.Parse()
+
+	addr := os.Getenv("PORT")
+	if *port != "" {
+		addr = *port
+	}
+	if addr == "" {
+		addr = ":8080"
+	}
+	if addr[0] != ':' {
+		addr = ":" + addr
+	}
+
+	root := os.Getenv("STATIC_ROOT")
+	if *staticRoot != "" {
+		root = *staticRoot
+	}
+	if root == "" {
+		root = "./web"
+	}
+
 	// Setup
 	e := echo.New()
-	// Set Bundle MiddleWare
 	e.Use(middleware.Gzip())
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:   "/web",       // This is the path to your SPA build folder, the folder that is created from running "npm build"
-		Index:  "index.html", // This is the default html page for your SPA
+		Root:   root,
+		Index:  "index.html",
 		Browse: false,
 		HTML5:  true,
 	}))
@@ -28,7 +51,7 @@ func main() {
 	defer stop()
 
 	sc := echo.StartConfig{
-		Address:         ":8080",
+		Address:         addr,
 		GracefulTimeout: 5 * time.Second,
 	}
 	if err := sc.Start(ctx, e); err != nil {

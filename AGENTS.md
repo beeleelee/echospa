@@ -12,8 +12,25 @@ go run .                     # run dev (no hot-reload)
 ## Architecture
 
 - **`main.go`** — single entrypoint, package `main`.
-- Static SPA must live under **`/web`** (relative to binary root) with an `index.html`. Uses Echo's `StaticWithConfig` with `HTML5: true` (history API fallback).
-- Server listens on **`:8080`** with Gzip middleware and 5s graceful shutdown on SIGINT/SIGTERM.
+- Static SPA must live under **`./web`** (configurable) with an `index.html`. Uses Echo's `StaticWithConfig` with `HTML5: true` (history API fallback).
+- Server listens on **`:8080`** (configurable) with Gzip middleware and 5s graceful shutdown on SIGINT/SIGTERM.
+
+## Configuration
+
+Both command-line flags and environment variables are supported (flags take priority).
+
+| Setting          | Flag               | Env             | Default  |
+|------------------|--------------------|-----------------|----------|
+| Listen port      | `--port`           | `PORT`          | `8080`   |
+| Static files root| `--static-root`    | `STATIC_ROOT`   | `./web`  |
+
+```sh
+# Via flags
+echospa --port 9090 --static-root /app/spa
+
+# Via env vars
+PORT=9090 STATIC_ROOT=/app/spa echospa
+```
 
 ## SPA build
 

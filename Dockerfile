@@ -7,5 +7,7 @@ RUN CGO_ENABLED=0 go build -o /echospa
 
 FROM alpine:3.21
 COPY --from=build /echospa /echospa
+ENV PORT=8080
+ENV STATIC_ROOT=/web
 EXPOSE 8080
 ENTRYPOINT ["/echospa"]
